@@ -1,7 +1,9 @@
+import { City } from './../../model/city.model';
 import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   ContentChild,
+  inject,
   Inject,
   input,
   signal,
@@ -19,21 +21,18 @@ import { ListItemComponent } from '../list-item/list-item.component';
   template: `
     <div
       class="flex w-fit flex-col gap-3 rounded-md border-2 border-black p-4"
-      [class]="customClass()">
-      @if (type() === CardType.TEACHER) {
-        <img ngSrc="assets/img/teacher.png" width="200" height="200" />
-      }
-      @if (type() === CardType.STUDENT) {
-        <img ngSrc="assets/img/student.webp" width="200" height="200" />
-      }
-
+      [class]="'bg-light'">
+      
+    
+      
+      <ng-content select="[imgCard]"></ng-content>  
       <section>
         @for (item of this.list(); let i = $index; track item) {
-          <app-list-item [item]="item" [type]="type()">
+          <app-list-item [item]="item" >
             <ng-container
               [ngTemplateOutlet]="rowContent"
               [ngTemplateOutletContext]="{
-                $implicit: this.dir?.data[i]
+                $implicit:this.dir?.data?.[i] ?? ''
               }"></ng-container>
           </app-list-item>
         }
@@ -46,19 +45,24 @@ import { ListItemComponent } from '../list-item/list-item.component';
       </button>
     </div>
   `,
-  imports: [ListItemComponent, NgOptimizedImage, NgTemplateOutlet],
+   styles: [
+    `    
+    .bg-light {
+      background-color: var(--light-bg, rgba(250, 0, 0, 0.1));
+    }
+  `
+],
+  imports: [ListItemComponent, NgTemplateOutlet],
 })
 export class CardComponent {
   readonly list = input<CardTypes[]>([]);
-  finalCard = signal<CardTypes[]>([]);
-  readonly type = input.required<CardType>();
-  readonly customClass = input('');
-  CardType = CardType;
-  @ContentChild(RowContentDirective) dir: any;
+
+  
+  @ContentChild(RowContentDirective) dir: RowContentDirective<CardTypes> | undefined = undefined;
   @ContentChild(RowContentDirective, { read: TemplateRef })
   rowContent: TemplateRef<any> | null = null;
-
-  constructor(@Inject(CardToken) private cardToken: CrudForCard<CardTypes>) {}
+  cardToken = inject(CardToken)
+  
 
   addNewItem() {
     this.cardToken.addOne(this.cardToken.randData());

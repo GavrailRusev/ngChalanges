@@ -5,11 +5,13 @@ import { CardToken } from '../../model/card-token';
 import { CardType } from '../../model/card.model';
 import { RowContentDirective } from '../../model/row-content.directive';
 import { CardComponent } from '../../ui/card/card.component';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-teacher-card',
   template: `
-    <app-card [list]="teachers()" [type]="cardType" customClass="bg-light-red">
+    <app-card [list]="teachers()" >
+    <img imgCard ngSrc="assets/img/teacher.png" width="200" height="200" />
       <ng-template [appRowContent]="teachers()" let-row>
         {{ row.firstName }}
       </ng-template>
@@ -17,13 +19,15 @@ import { CardComponent } from '../../ui/card/card.component';
   `,
   styles: [
     `
-      ::ng-deep .bg-light-red {
-        background-color: rgba(250, 0, 0, 0.1);
-      }
+    :host{
+      --light-red-bg: rgba(250, 0, 0, 0.1);
+    }
+    
+
     `,
   ],
   providers: [{ provide: CardToken, useExisting: TeacherStore }],
-  imports: [CardComponent, RowContentDirective],
+  imports: [CardComponent, RowContentDirective,NgOptimizedImage],
 })
 export class TeacherCardComponent implements OnInit {
   private http = inject(FakeHttpService);

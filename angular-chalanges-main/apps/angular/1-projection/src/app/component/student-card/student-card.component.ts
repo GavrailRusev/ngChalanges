@@ -10,14 +10,16 @@ import { CardToken } from '../../model/card-token';
 import { CardType } from '../../model/card.model';
 import { RowContentDirective } from '../../model/row-content.directive';
 import { CardComponent } from '../../ui/card/card.component';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-student-card',
   template: `
     <app-card
       [list]="students()"
-      [type]="cardType"
-      customClass="bg-light-green">
+      >
+      <img imgCard ngSrc="assets/img/student.webp" width="200" height="200" />
+      
       <ng-template [appRowContent]="students()" let-row>
         {{ row.firstName }}
       </ng-template>
@@ -25,12 +27,13 @@ import { CardComponent } from '../../ui/card/card.component';
   `,
   styles: [
     `
-      ::ng-deep .bg-light-green {
-        background-color: rgba(0, 250, 0, 0.1);
-      }
+    :host{
+      --light-bg: rgba(0, 250, 0, 0.1);
+    }
+    
     `,
   ],
-  imports: [CardComponent, RowContentDirective],
+  imports: [CardComponent, RowContentDirective,NgOptimizedImage],
   providers: [{ provide: CardToken, useExisting: StudentStore }],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

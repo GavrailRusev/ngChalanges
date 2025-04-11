@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   Inject,
   input,
 } from '@angular/core';
@@ -24,10 +25,10 @@ import { CrudForCard } from '../../model/crud.interface';
 })
 export class ListItemComponent {
   readonly item = input.required<any>();
-  readonly type = input.required<CardType>();
-  constructor(@Inject(CardToken) private cardToken: CrudForCard<any>) {}
+  cardToken = inject(CardToken)
+  
 
   delete(id: number) {
-    this.cardToken.deleteOne(id);
+    this.cardToken.deleteOne(id)
   }
 }
