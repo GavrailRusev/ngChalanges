@@ -41,7 +41,7 @@ export class StudentCardComponent implements OnInit {
   private http = inject(FakeHttpService);
   private store = inject(StudentStore);
   students = this.store.students;
-  cardType = CardType.STUDENT;
+
 
   ngOnInit(): void {
     this.http.fetchStudents$.subscribe((s) => {
