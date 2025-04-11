@@ -8,6 +8,7 @@ export const subject = [
 export type Subject = (typeof subject)[number];
 
 export interface Teacher {
+  type: string;
   id: number;
   firstName: string;
   lastName: string;

@@ -1,9 +1,17 @@
-import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
-import { randStudent, randTeacher } from '../../data-access/fake-http.service';
-import { StudentStore } from '../../data-access/student.store';
-import { TeacherStore } from '../../data-access/teacher.store';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import {
+  Component,
+  ContentChild,
+  Inject,
+  input,
+  signal,
+  TemplateRef,
+} from '@angular/core';
+import { CardTypes } from '../../model/card-factory';
+import { CardToken } from '../../model/card-token';
 import { CardType } from '../../model/card.model';
+import { CrudForCard } from '../../model/crud.interface';
+import { RowContentDirective } from '../../model/row-content.directive';
 import { ListItemComponent } from '../list-item/list-item.component';
 
 @Component({
@@ -20,11 +28,14 @@ import { ListItemComponent } from '../list-item/list-item.component';
       }
 
       <section>
-        @for (item of list(); track item) {
-          <app-list-item
-            [name]="item.firstName"
-            [id]="item.id"
-            [type]="type()"></app-list-item>
+        @for (item of this.list(); let i = $index; track item) {
+          <app-list-item [item]="item" [type]="type()">
+            <ng-container
+              [ngTemplateOutlet]="rowContent"
+              [ngTemplateOutletContext]="{
+                $implicit: this.dir?.data[i]
+              }"></ng-container>
+          </app-list-item>
         }
       </section>
 
@@ -35,24 +46,21 @@ import { ListItemComponent } from '../list-item/list-item.component';
       </button>
     </div>
   `,
-  imports: [ListItemComponent, NgOptimizedImage],
+  imports: [ListItemComponent, NgOptimizedImage, NgTemplateOutlet],
 })
 export class CardComponent {
-  private teacherStore = inject(TeacherStore);
-  private studentStore = inject(StudentStore);
-
-  readonly list = input<any[] | null>(null);
+  readonly list = input<CardTypes[]>([]);
+  finalCard = signal<CardTypes[]>([]);
   readonly type = input.required<CardType>();
   readonly customClass = input('');
-
   CardType = CardType;
+  @ContentChild(RowContentDirective) dir: any;
+  @ContentChild(RowContentDirective, { read: TemplateRef })
+  rowContent: TemplateRef<any> | null = null;
+
+  constructor(@Inject(CardToken) private cardToken: CrudForCard<CardTypes>) {}
 
   addNewItem() {
-    const type = this.type();
-    if (type === CardType.TEACHER) {
-      this.teacherStore.addOne(randTeacher());
-    } else if (type === CardType.STUDENT) {
-      this.studentStore.addOne(randStudent());
-    }
+    this.cardToken.addOne(this.cardToken.randData());
   }
 }

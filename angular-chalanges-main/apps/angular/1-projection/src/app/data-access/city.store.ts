@@ -1,12 +1,15 @@
 import { Injectable, signal } from '@angular/core';
+
 import { City } from '../model/city.model';
+import { CrudForCard } from '../model/crud.interface';
+import { randomCity } from './fake-http.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CityStore {
-  private cities = signal<City[]>([]);
-
+export class CityStore implements CrudForCard<City> {
+  public cities = signal<City[]>([]);
+  public randData = randomCity;
   addAll(cities: City[]) {
     this.cities.set(cities);
   }

@@ -1,16 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FakeHttpService } from '../../data-access/fake-http.service';
 import { TeacherStore } from '../../data-access/teacher.store';
+import { CardToken } from '../../model/card-token';
 import { CardType } from '../../model/card.model';
+import { RowContentDirective } from '../../model/row-content.directive';
 import { CardComponent } from '../../ui/card/card.component';
 
 @Component({
   selector: 'app-teacher-card',
   template: `
-    <app-card
-      [list]="teachers()"
-      [type]="cardType"
-      customClass="bg-light-red"></app-card>
+    <app-card [list]="teachers()" [type]="cardType" customClass="bg-light-red">
+      <ng-template [appRowContent]="teachers()" let-row>
+        {{ row.firstName }}
+      </ng-template>
+    </app-card>
   `,
   styles: [
     `
@@ -19,7 +22,8 @@ import { CardComponent } from '../../ui/card/card.component';
       }
     `,
   ],
-  imports: [CardComponent],
+  providers: [{ provide: CardToken, useExisting: TeacherStore }],
+  imports: [CardComponent, RowContentDirective],
 })
 export class TeacherCardComponent implements OnInit {
   private http = inject(FakeHttpService);

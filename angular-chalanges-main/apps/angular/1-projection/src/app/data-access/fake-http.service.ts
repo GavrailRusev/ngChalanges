@@ -17,6 +17,7 @@ import { Teacher, subject } from '../model/teacher.model';
 const factoryTeacher = incrementalNumber();
 
 export const randTeacher = () => ({
+  type: 'teacher',
   id: factoryTeacher(),
   firstName: randFirstName(),
   lastName: randLastName(),
@@ -33,6 +34,7 @@ const teachers: Teacher[] = [
 const factoryStudent = incrementalNumber();
 
 export const randStudent = (): Student => ({
+  type: 'student',
   id: factoryStudent(),
   firstName: randFirstName(),
   lastName: randLastName(),
@@ -51,6 +53,7 @@ const students: Student[] = [
 const factoryCity = incrementalNumber();
 
 export const randomCity = (): City => ({
+  type: 'city',
   id: factoryCity(),
   name: randCity(),
   country: randCountry(),
