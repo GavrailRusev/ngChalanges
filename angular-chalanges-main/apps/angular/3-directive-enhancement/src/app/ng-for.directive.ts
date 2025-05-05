@@ -27,7 +27,7 @@ export class NgForDirective<T> {
     this.ref?.destroy();
     debugger;
     if (!this.ngForOf || this.ngForOf.length === 0) {
-      this.vcr.createEmbeddedView(this.ngForTest);
+      this.ref = this.vcr.createEmbeddedView(this.ngForTest);
     } else {
       this.ref?.destroy();
     }
