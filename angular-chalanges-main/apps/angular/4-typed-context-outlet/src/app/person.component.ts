@@ -13,7 +13,7 @@ interface Person {
     <ng-container
       *ngTemplateOutlet="
         personTemplateRef || emptyRef;
-        context: { $implicit: person.name, age: person.age }
+        context: { $implicit: person }
       "></ng-container>
 
     <ng-template #emptyRef>No Template</ng-template>
